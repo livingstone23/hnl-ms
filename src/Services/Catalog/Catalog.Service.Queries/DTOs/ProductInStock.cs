@@ -12,4 +12,7 @@ namespace Catalog.Service.Queries.DTOs
         public int ProductId { get; set; }
         public int Stock { get; set; }
     }
+
+
+
 }
