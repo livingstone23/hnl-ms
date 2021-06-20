@@ -1,6 +1,7 @@
 using Catalog.Persistence.DB;
 using Catalog.Service.Queries;
 using Common.Logging;
+using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -43,11 +44,13 @@ namespace Catalog.Api
                 );
 
             // Health check, se le agregar un comportamiento en especifico
-            // 
-            //services.AddHealthChecks()
-             //           .AddCheck("self", () => HealthCheckResult.Healthy())
-            //            .AddDbContextCheck<ApplicationDbContext>(typeof(ApplicationDbContext).Name);
+            services.AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy())
+                .AddDbContextCheck<ApplicationDbContext>(typeof(ApplicationDbContext).Name);
 
+            //Para la interfaz grafica del helthcheck
+            services.AddHealthChecksUI()
+                .AddInMemoryStorage();
 
             services.AddMediatR(Assembly.Load("Catalog.Service.EH"));
 
@@ -85,12 +88,12 @@ namespace Catalog.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                //endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-                //{
-                //    Predicate = _ => true,
-                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                //});
-                //endpoints.MapHealthChecksUI();
+                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                endpoints.MapHealthChecksUI();
             });
         }
     }
