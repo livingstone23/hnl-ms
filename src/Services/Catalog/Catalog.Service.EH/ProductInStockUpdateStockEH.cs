@@ -27,7 +27,7 @@ namespace Catalog.Service.EH
             )
         {
             _context = context;
-
+            _logger = logger;
         }
 
         public async Task Handle(ProductInStockUpdateStockCommand notification, CancellationToken cancellationToken)
