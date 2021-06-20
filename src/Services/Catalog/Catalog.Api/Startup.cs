@@ -1,5 +1,6 @@
 using Catalog.Persistence.DB;
 using Catalog.Service.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Catalog.Api
@@ -37,7 +39,10 @@ namespace Catalog.Api
                     )
                 );
 
+            services.AddMediatR(Assembly.Load("Catalog.Service.EH"));
+
             services.AddTransient<IProductQueryService, ProductQueryService>();
+            services.AddTransient<IProductInStockQueryService, ProductInStockQueryService>();
 
 
 
