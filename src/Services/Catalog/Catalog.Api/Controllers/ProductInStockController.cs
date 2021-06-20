@@ -1,4 +1,5 @@
 ﻿using Catalog.Service.EH;
+using Catalog.Service.EH.Commands;
 using Catalog.Service.Queries;
 using Catalog.Service.Queries.DTOs;
 using MediatR;
