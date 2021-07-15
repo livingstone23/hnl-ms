@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,9 +10,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Order.Persistence.DB;
+using Order.Service.Proxies;
+using Order.Service.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Order.Api
@@ -39,7 +43,22 @@ namespace Order.Api
                 )
             );
 
+           
+
+            // ApiUrls, asignamos el valor de la api contenida en el json
+            services.Configure<ApiUrls>(opts => Configuration.GetSection("ApiUrls").Bind(opts));
+
+            // Proxies
+            services.AddHttpClient<ICatalogProxy, CatalogProxy>();
+
+            // Event handlers
+            services.AddMediatR(Assembly.Load("Order.Service.EH"));
+
+            // Query services
+            services.AddTransient<IOrderQueryService, OrderQueryService>();
+
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order.Api", Version = "v1" });
