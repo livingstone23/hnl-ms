@@ -21,7 +21,7 @@ namespace Order.Service.Proxies
 
         public CatalogProxy(HttpClient httpClient, IOptions<ApiUrls> apiUrls, IHttpContextAccessor httpContextAccessor)
         {
-            //httpClient.AddBearerToken(httpContextAccessor);
+            httpClient.AddBearerToken(httpContextAccessor);
 
             _httpClient = httpClient;
             _apiUrls = apiUrls.Value;

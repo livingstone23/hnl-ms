@@ -1,5 +1,6 @@
 using Common.Logging;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,11 +8,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Order.Persistence.DB;
 using Order.Service.Proxies;
 using Order.Service.Queries;
 using System.Reflection;
+using System.Text;
 
 namespace Order.Api
 {
@@ -28,6 +31,8 @@ namespace Order.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // HttpContextAccessor
+            // Si no se invoca el metodo al momento de no permitira resoltar la interface IHttpContextAccessor 
+            //a utilizar en CatalogProxy 
             services.AddHttpContextAccessor();
 
             // DbContext
@@ -54,6 +59,22 @@ namespace Order.Api
 
             services.AddControllers();
 
+            // Add Authentication
+            var secretKey = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("SecretKey"));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order.Api", Version = "v1" });
@@ -69,10 +90,6 @@ namespace Order.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order.Api v1"));
 
-
-                loggerFactory.AddSyslog(
-                    Configuration.GetValue<string>("Papertrail:host"),
-                    Configuration.GetValue<int>("Papertrail:port"));
             }
             else
             {

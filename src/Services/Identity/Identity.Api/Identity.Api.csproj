@@ -8,21 +8,18 @@
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.7">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Common.Logging\Common.Logging.csproj" />
-    <ProjectReference Include="..\Order.Service.EH\Order.Service.EH.csproj" />
-    <ProjectReference Include="..\Order.Service.Proxies\Order.Service.Proxies.csproj" />
-    <ProjectReference Include="..\Order.Service.Queries\Order.Service.Queries.csproj" />
+    <ProjectReference Include="..\Identity.Persistence.DB\Identity.Persistence.DB.csproj" />
+    <ProjectReference Include="..\Identity.Service.EH\Identity.Service.EH.csproj" />
+    <ProjectReference Include="..\Identity.Service.Queries\Identity.Service.Queries.csproj" />
   </ItemGroup>
-
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
