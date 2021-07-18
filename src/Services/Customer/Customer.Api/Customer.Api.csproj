@@ -20,4 +20,6 @@
     <ProjectReference Include="..\Customer.Service.Queries\Customer.Service.Queries.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>

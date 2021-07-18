@@ -33,6 +33,8 @@ namespace Order.Service.EH
             _logger.LogInformation("--- New order creation started");
             var entry = new Domain.Order();
 
+            //Inicia "Proceso de Orquestacion", hasta confirmar que se realizo la transaccion
+            //Se obtiene toda la resonsabilidad en un bloque de transaccion.
             using (var trx = await _context.Database.BeginTransactionAsync())
             {
                 // 01. Prepare detail
@@ -52,15 +54,25 @@ namespace Order.Service.EH
 
                 // 04. Update Stocks
                 _logger.LogInformation("--- Updating stock");
-                await _catalogProxy.UpdateStockAsync(new ProductInStockUpdateStockCommand
+
+
+                try
                 {
-                    Items = notification.Items.Select(x => new ProductInStockUpdateItem
+                    await _catalogProxy.UpdateStockAsync(new ProductInStockUpdateStockCommand
                     {
-                        ProductId = x.ProductId,
-                        Stock = x.Quantity,
-                        Action = ProductInStockAction.Substract
-                    })
-                });
+                        Items = notification.Items.Select(x => new ProductInStockUpdateItem
+                        {
+                            ProductId = x.ProductId,
+                            Stock = x.Quantity,
+                            Action = ProductInStockAction.Substract
+                        })
+                    });
+                }
+                catch (Exception e)
+                {
+
+                    _logger.LogError($"--- No se pudo crear la orden. {e.Message}");
+                }
 
                 await trx.CommitAsync();
             }
